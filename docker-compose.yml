@@ -1,0 +1,10 @@
+---
+version: "3"
+services:
+    internet_statistics:
+        image: internet_stats:0.1
+        container_name: internet_statistics
+        ports:
+            - 10000:5000
+        volumes:
+            - /home/jphansen/src/internet_stats/config.yml:/home/net_status/config.yml

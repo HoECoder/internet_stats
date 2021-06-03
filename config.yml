@@ -1,0 +1,24 @@
+---
+speedtest:
+  servers:
+    - 2917
+  frequency: 8h
+  initial_delay: 2m
+latency:
+  urls:
+    - aws.amazon.com
+    - www.amazon.com
+    - www.google.com
+    - mail.google.com
+    - 1.1.1.1
+    - 1.0.0.1
+    - 8.8.8.8
+    - 8.8.4.4
+    - 9.9.9.9
+  count: 4
+  interval: 1.0
+  frequency: 5m
+  size: 1
+redis:
+  addr: localhost
+  port: 6379
