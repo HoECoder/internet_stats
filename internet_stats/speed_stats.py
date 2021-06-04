@@ -2,11 +2,18 @@
 
 import time
 import json
+from copy import deepcopy
 from typing import Mapping, Union
 import speedtest
 
 def make_nice_server_string(server_info: dict) -> str:
     return json.dumps(server_info)
+
+class SpeedtestError(Exception):
+    """General Error for Speed Test"""
+
+class NoServersError(SpeedtestError):
+    """Raised when no matching servers are found"""
 
 class Speedtester:
     def __init__(self, servers, results_to_save=4):
@@ -32,7 +39,11 @@ class Speedtester:
     def speed_test(self):
         now = time.time()
         tester = speedtest.Speedtest()
-        reduced = tester.get_servers(servers=self.servers)
+        try:
+            reduced = tester.get_servers(servers=deepcopy(self.servers))
+        except speedtest.NoMatchedServers as no_match_err:
+            msg = f"{str(no_match_err)}: {self.servers}"
+            raise NoServersError(msg)
         servers = []
         for server in reduced.values():
             servers.extend(server)

@@ -1,0 +1,8 @@
+[speedtest]
+servers = [ 2917,]
+frequency = "8h"
+#initial_delay = "1s"
+
+[redis]
+addr = "localhost"
+port = 6379

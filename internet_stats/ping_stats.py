@@ -45,7 +45,7 @@ class Pinger:
                 _mod_logger.error(f"You must be root to ping")
             else:
                 _mod_logger.error(f"{str(perm_error)}")
-            raise PingError(f"Was UID {euid}") from perm_error
+            raise PingError(f"Was UID {euid}, need to be 0") from perm_error
             return  None
         stat_results = {}
         all_timings = []

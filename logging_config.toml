@@ -1,0 +1,34 @@
+version = 1
+
+[root]
+level = "INFO"
+handlers = [ "console",]
+
+[formatters.simple]
+format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+[handlers.console]
+class = "logging.StreamHandler"
+level = "INFO"
+formatter = "simple"
+stream = "ext://sys.stdout"
+
+[loggers.pinger]
+level = "INFO"
+handlers = [ "console",]
+propagate = false
+
+[loggers.speeder]
+level = "INFO"
+handlers = [ "console",]
+propagate = false
+
+[loggers.runners]
+level = "INFO"
+handlers = [ "console",]
+propagate = false
+
+[loggers.ping_stats]
+level = "INFO"
+handlers = [ "console",]
+propagate = false
