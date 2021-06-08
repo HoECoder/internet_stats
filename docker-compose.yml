@@ -1,10 +1,50 @@
 ---
 version: "3"
 services:
-    internet_statistics:
-        image: internet_stats:0.1
-        container_name: internet_statistics
+    web:
+        depends_on: 
+            - redis
+        build:
+            context: .
+            dockerfile: web.dockerfile
+        image: webistats:0.1
+        networks: 
+            - front
+            - back
         ports:
-            - 10000:5000
+            - 9999:5000
+        environment:
+            REDIS_URL: "redis://redis:6379/0"
+        restart: unless-stopped
+    speed:
+        depends_on: 
+            - redis
+        build:
+            context: .
+            dockerfile: speeder.dockerfile
+        image: speeder:0.2
+        networks:
+            - back
         volumes:
-            - /home/jphansen/src/internet_stats/config.yml:/home/net_status/config.yml
+            - /home/jphansen/src/internet_stats/speeder.toml:/home/speed_stats/speeder.toml
+        restart: unless-stopped
+    latency:
+        depends_on: 
+            - redis
+        build:
+            context: .
+            dockerfile: pinger.dockerfile
+        image: pinger:0.2
+        networks:
+            - back
+        volumes:
+            - /home/jphansen/src/internet_stats/pinger.toml:/home/ping_stats/pinger.toml
+        restart: unless-stopped
+    redis:
+        image: redis:6.2.4-alpine3.13
+        networks:
+            - back
+        restart: unless-stopped
+networks:
+    front:
+    back:

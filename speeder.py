@@ -69,8 +69,7 @@ def speed_loop(speed_conf: Mapping, redis_conf: Mapping):
             try:
                 redis = Redis(redis_conf['addr'],
                               redis_conf.get('port', 6379))
-                for url, stats in result.items():
-                    redis.hset(url, stats)
+                redis.hmset("speedtest", result)
                 del redis
             except RedisError as redis_error:
                 _mod_logger.error(f"Hit a redis error: {str(redis_error)}")

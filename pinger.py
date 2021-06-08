@@ -43,7 +43,7 @@ def ping_loop(latency_conf: Mapping, redis_conf: Mapping):
                 redis = Redis(redis_conf['addr'],
                               redis_conf.get('port', 6379))
                 for url, stats in result.items():
-                    redis.hset(url, stats)
+                    redis.hmset(url, stats)
                 del redis
             except RedisError as redis_error:
                 _mod_logger.error(f"Hit a redis error: {str(redis_error)}")

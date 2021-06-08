@@ -1,6 +1,9 @@
 import json
+import os
 from flask import jsonify, abort, Response
+import redis
 from webservice import app, redis_client
+
 
 INTEGER_FIELDS = ["sent", "recv"]
 FLOAT_FIELDS = ["up", "down", "ping", "time"]
@@ -26,6 +29,11 @@ def cleanup_latency(latency: dict) -> dict:
         new_latency[key.decode()] = float(val.decode())
     return new_latency
 
+def handle_redis_down(redis_err: redis.exceptions.RedisError) -> Response:
+    resp = jsonify(err = "Internal Redis Down")
+    resp.status_code = 503
+    return resp
+
 @app.route('/')
 @app.route('/api')
 @app.route('/api/v1')
@@ -34,7 +42,10 @@ def hello():
 
 @app.route('/api/v1/speed')
 def get_speed():
-    speed_data = redis_client.hgetall('speedtest')
+    try:
+        speed_data = redis_client.hgetall('speedtest')
+    except redis.exceptions.RedisError as redis_err:
+        return handle_redis_down(redis_err)
     if not speed_data:
         resp = Response('', 204)
         return resp
@@ -45,7 +56,10 @@ def get_speed():
 
 @app.route('/api/v1/speed_simple')
 def get_speed_simple():
-    speed_data = redis_client.hgetall('speedtest')
+    try:
+        speed_data = redis_client.hgetall('speedtest')
+    except redis.exceptions.RedisError as redis_err:
+        return handle_redis_down(redis_err)
     if not speed_data:
         resp = Response('', 204)
         return resp
@@ -61,7 +75,10 @@ def get_speed_simple():
 def get_latency(host):
     if host.casefold() == 'all'.casefold():
         host = 'combined'
-    data = redis_client.hgetall(host)
+    try:
+        data = redis_client.hgetall(host)
+    except redis.exceptions.RedisError as redis_err:
+        return handle_redis_down(redis_err)
     if not data:
         resp = Response('', 204)
         return resp

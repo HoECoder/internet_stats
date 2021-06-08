@@ -14,5 +14,5 @@ internal = 1.0
 frequency = "5m"
 size = 1
 [redis]
-    addr = "localhost"
+    addr = "redis"
     port = 6379
